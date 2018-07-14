@@ -138,20 +138,24 @@ int main(int argc, char** argv) {
 		-0.5, -0.5f, // vertex 1 position
 		0.5f,  -0.5f, // vertex 2 position
  		0.5f, 0.5f,  // vertex 3 position
-		-0.5f, 0.5f
+		-0.5f, 0.5f, // vertex 4 position
+		-1.0f, 0.0f, // vertex 5 position
+		1.0f, 0.0f // vertex 6 position
 	};
 
 	unsigned indices[] {
 		// draw in this order
 		0, 1, 2, 
-		2, 3, 0
+		2, 3, 0,
+		0, 4, 3,
+		1, 5, 2
 	};
 
 	// the Buffers	
 	unsigned int buffer{}; // identify the vertex buffer
 	glGenBuffers(1, &buffer); // generate 1 buffer, put identifier in buffer
 	glBindBuffer(GL_ARRAY_BUFFER, buffer); 
-	glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), position, GL_STATIC_DRAW);	// give it to OpenGL
+	glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), position, GL_STATIC_DRAW);	// give it to OpenGL
 
 	// enable the array
 	glEnableVertexAttribArray(0);
@@ -169,7 +173,7 @@ int main(int argc, char** argv) {
 	unsigned int indexBufferObj{}; // identify the vertex buffer
 	glGenBuffers(1, &indexBufferObj); // generate 1 buffer, put identifier in buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObj); 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned), indices, GL_STATIC_DRAW);	// give it to OpenGL
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12 * sizeof(unsigned), indices, GL_STATIC_DRAW);	// give it to OpenGL
 
 	std::optional<std::string> vertexShaderCode { graphix::ShaderUtil::readShader(argv[1]) };
 	std::optional<std::string> fragmentShaderCode { graphix::ShaderUtil::readShader(argv[2]) };
@@ -188,7 +192,7 @@ int main(int argc, char** argv) {
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
 
 		glfwSwapBuffers(window);
 
