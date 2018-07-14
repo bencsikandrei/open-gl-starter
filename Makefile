@@ -9,14 +9,16 @@ FILE_MODERN=basics/modernOpenGl.cpp
 FILE_GLEW=basics/usingGlew.cpp
 FILE_SHADERS=basics/vertexPositions.cpp
 FILE_SHADERS2=modern/vertexShader.cpp
+FILE_SHADERS_SQUARE=modern/vertexShaderSquare.cpp
 
 SIMPLE=build/glfwSetup
 MODERN=build/modernOpenGl
 GLEW=build/glewUsage
 SHADER=build/shaderUsage
 SHADER2=build/vertexShader
+SHADER_SQUARE=build/vertexShaderSquare
 
-all: prepare simple modern glew shader shader2
+all: prepare simple modern glew shader shader2 shader_sq
 
 prepare:
 	mkdir -p build
@@ -36,4 +38,6 @@ glew:
 shader2:
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(SHADER2) $(FILE_SHADERS2) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
 
+shader_sq:
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(SHADER_SQUARE) $(FILE_SHADERS_SQUARE) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
 ## 
