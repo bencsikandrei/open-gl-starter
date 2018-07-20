@@ -3,8 +3,10 @@
 #include <optional>
 #include <vector>
 
-#include "shaderutils/GlUtils.hpp"
-#include "shaderutils/ShaderUtil.hpp"
+#include "../abstractions/GlUtils.hpp"
+#include "../abstractions/ShaderUtil.hpp"
+
+#include <GLFW/glfw3.h>
 
 #include <cassert>
 

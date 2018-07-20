@@ -22,14 +22,26 @@ SHADER_ERRORS=build/vertexShaderErrors
 
 SRC_DIR=modern
 OBJ_DIR=build
+ABSTR_DIR=abstractions
+
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.exe,$(SRC_FILES))
 
+ABSTR=$(wildcard $(ABSTR_DIR)/*.cpp)
+LIB_OBJ_FILES := $(ABSTR:.cpp=.o)
 all: $(OBJ_FILES)
 
+openglib: $(LIB_OBJ_FILES)
+	echo "$(ABSTR)"
+	echo "$(LIB_OBJ_FILES)"
+	ar rcs lib/$@.a $^ 	
 # all: prepare simple modern glew shader shader2 shader_sq shader_err 
 
-build/%.exe: modern/%.cpp
+abstractions/%.o: abstractions/%.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ -c $^ -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
+
+
+build/%.exe: modern/%.cpp 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
 
 prepare:

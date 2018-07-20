@@ -6,7 +6,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "shaderutils/ShaderUtil.hpp"
+#include "../abstractions/GlUtils.hpp"
+#include "../abstractions/ShaderUtil.hpp"
 
 #include <cassert>
 
@@ -14,29 +15,6 @@ namespace {
 	constexpr uint16_t windowHeight { 480 };
 	constexpr uint16_t windowWidth { 640 };
 }
-static void GLClearErrors() {
-	while(glGetError() != GL_NO_ERROR);
-}
-
-static bool GLCheckError(const char* func, const char* file, int line) {
-	while(GLenum error = glGetError()) {
-		std::cout << "[OpenGL Error] (" << error << " in: " << func << " file: " 
-			<< file << " line: " << line << ")\n";
-		return false;
-	}
-	return true;
-}
-#define GLCall(x) \
-	GLClearErrors(); \
-	x;\
-	assert(GLCheckError(#x, __FILE__, __LINE__));
-
-// template <typename Function>
-// static void DebugOpenGl(Function func) {
-// 	GLClearErrors();
-// 	func();
-// 	GLCheckError();
-// }
 
 using ShaderType = unsigned;
 using ShaderId = unsigned;

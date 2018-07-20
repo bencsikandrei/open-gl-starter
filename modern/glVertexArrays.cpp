@@ -3,12 +3,13 @@
 #include <optional>
 #include <vector>
 
+#include "../abstractions/VertexBuffer.hpp"
+#include "../abstractions/IndexBuffer.hpp"
 #include "../abstractions/GlUtils.hpp"
 #include "../abstractions/ShaderUtil.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 
 #include <cassert>
 
@@ -118,7 +119,7 @@ int main(int argc, char** argv) {
 	GLFWwindow* window = getWindow(windowWidth, windowHeight);
 	// make window current cntext
 	glfwMakeContextCurrent(window);
-
+	glfwSwapInterval(1);
 	
 	// initialize glew
 	GLenum err = glewInit();
@@ -135,17 +136,29 @@ int main(int argc, char** argv) {
 	glGenVertexArrays(1, &vertexArrayId);
 	glBindVertexArray(vertexArrayId);
 
-	float position[6] {
+	float position[] {
 		// x    y
 		-0.5, -0.5f, // vertex 1 position
-		0.0f,  0.5f, // vertex 2 position
- 		0.5f, -0.5f  // vertex 3 position
+		0.5f,  -0.5f, // vertex 2 position
+ 		0.5f, 0.5f,  // vertex 3 position
+		-0.5f, 0.5f, // vertex 4 position
+		-1.0f, 0.0f, // vertex 5 position
+		1.0f, 0.0f // vertex 6 position
 	};
-	// the Buffers	
-	unsigned int buffer{}; // identify the vertex buffer
-	glGenBuffers(1, &buffer); // generate 1 buffer, put identifier in buffer
-	glBindBuffer(GL_ARRAY_BUFFER, buffer); 
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), position, GL_STATIC_DRAW);	// give it to OpenGL
+
+	unsigned indices[] {
+		// draw in this order
+		0, 1, 2, 
+		2, 3, 0,
+		0, 4, 3,
+		1, 5, 2
+	};
+
+	unsigned vao{};
+	GLCall(glGenVertexArrays(1, &vao));
+	GLCall(glBindVertexArray(vao));
+
+	VertexBuffer vb((void*)&position, 6);
 
 	// enable the array
 	glEnableVertexAttribArray(0);
@@ -158,6 +171,12 @@ int main(int argc, char** argv) {
 		sizeof(float) * 2 /* stride */, 
 		0 // position in the struct
 	);
+	
+	// the Buffers	
+	unsigned int indexBufferObj{}; // identify the vertex buffer
+	glGenBuffers(1, &indexBufferObj); // generate 1 buffer, put identifier in buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObj); 
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12 * sizeof(unsigned), indices, GL_STATIC_DRAW);	// give it to OpenGL
 
 	std::optional<std::string> vertexShaderCode { graphix::ShaderUtil::readShader(argv[1]) };
 	std::optional<std::string> fragmentShaderCode { graphix::ShaderUtil::readShader(argv[2]) };
@@ -169,14 +188,29 @@ int main(int argc, char** argv) {
 
 	unsigned int shader { createShader(*vertexShaderCode, *fragmentShaderCode) };
 
-	glUseProgram(shader);
+	GLCall(glUseProgram(shader)); // now the shaders are bound
+	int location { glGetUniformLocation(shader, "u_Color") };
+	assert(location != -1);
+	GLCall(glUniform4f(location, 0.2f, 0.2f, 0.1f, 1.0f));
+
+	// animate color
+	float R{}, G{}, B{};
+	float increment{0.05f};
 
 	// main loop
 	while(not glfwWindowShouldClose(window))
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		GLCall(glUniform4f(location, R, 0.2f, 0.1f, 1.0f));
+
+		GLCall(glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr));
+
+		if(R >= 1.0f)
+			increment = -0.5f;
+		else
+			increment = 0.5f;
+		R += increment;
 
 		glfwSwapBuffers(window);
 
