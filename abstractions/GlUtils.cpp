@@ -1,9 +1,7 @@
-#pragma once
-
 #include <iostream>
+#include <cassert>
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 namespace graphix
 {
@@ -19,10 +17,5 @@ bool GLCheckError(const char* func, const char* file, int line) {
 	}
 	return true;
 }
-
-#define GLCall(x) \
-	::graphix::GLClearErrors(); \
-	x;\
-	assert(::graphix::GLCheckError(#x, __FILE__, __LINE__));
 
 } // namespace graphix

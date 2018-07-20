@@ -4,55 +4,29 @@ CXX=g++
 CXXFLAGS=-Wall -Wextra -Wfatal-errors -std=c++17
 LDFLAGS=
 
-FILE_SIMPLE=basics/setupGLFW.cpp
-FILE_MODERN=basics/modernOpenGl.cpp
-FILE_GLEW=basics/usingGlew.cpp
-FILE_SHADERS=basics/vertexPositions.cpp
-FILE_SHADERS2=modern/vertexShader.cpp
-FILE_SHADERS_SQUARE=modern/vertexShaderSquare.cpp
-FILE_SHADERS_ERRORS=modern/vertexShaderErrors.cpp
-
-SIMPLE=build/glfwSetup
-MODERN=build/modernOpenGl
-GLEW=build/glewUsage
-SHADER=build/shaderUsage
-SHADER2=build/vertexShader
-SHADER_SQUARE=build/vertexShaderSquare
-SHADER_ERRORS=build/vertexShaderErrors
-
 SRC_DIR=modern
 OBJ_DIR=build
+ABSTR_DIR=abstractions
+
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.exe,$(SRC_FILES))
 
+ABSTR=$(wildcard $(ABSTR_DIR)/*.cpp)
+LIB_OBJ_FILES := $(ABSTR:.cpp=.o)
+
 all: $(OBJ_FILES)
 
+openglib: $(LIB_OBJ_FILES)
+	echo "$(ABSTR)"
+	echo "$(LIB_OBJ_FILES)"
+	ar rcs lib/lib$@.a $^ 	
 # all: prepare simple modern glew shader shader2 shader_sq shader_err 
 
-build/%.exe: modern/%.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
+abstractions/%.o: abstractions/%.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ -c $^ -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
+
+build/%.exe: modern/%.cpp 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ -pthread $(LIBS) -L/usr/lib64/ -Llib/ -lGLEW -lGLU -lopenglib
 
 prepare:
 	mkdir -p build
-
-simple:
-	$(CXX) $(LDFLAGS) -o $(SIMPLE) $(FILE_SIMPLE) -pthread $(LIBS)
-
-shader:
-	$(CXX) $(LDFLAGS) -o $(SHADER) $(FILE_SHADERS) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-
-modern:
-	$(CXX) $(LDFLAGS) -o $(MODERN) $(FILE_MODERN) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-
-glew:
-	$(CXX) $(LDFLAGS) -o $(GLEW) $(FILE_MODERN) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-
-shader2:
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(SHADER2) $(FILE_SHADERS2) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-
-shader_sq:
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(SHADER_SQUARE) $(FILE_SHADERS_SQUARE) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-
-shader_err:
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(SHADER_ERRORS) $(FILE_SHADERS_ERRORS) -pthread $(LIBS) -L/usr/lib64/ -lGLEW -lGLU
-## 
