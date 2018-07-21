@@ -1,12 +1,9 @@
 #include "VertexBuffer.hpp"
 #include "GlUtils.hpp"
 
-<<<<<<< HEAD
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-=======
->>>>>>> 7ed4fdf7916bb88a983873d787436b19366cd722
 VertexBuffer::VertexBuffer(void const* data, unsigned size) {
     GLCall(glGenBuffers(
         1, &mRendererId)); // generate 1 buffer, put identifier in buffer
