@@ -8,20 +8,17 @@
 =======
 >>>>>>> 7ed4fdf7916bb88a983873d787436b19366cd722
 VertexBuffer::VertexBuffer(void const* data, unsigned size) {
-	GLCall(glGenBuffers(1, &mRendererId)); // generate 1 buffer, put identifier in buffer
-	GLCall( glBindBuffer(GL_ARRAY_BUFFER, mRendererId) );  
-	GLCall( glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW) );	// give it to OpenGL
+    GLCall(glGenBuffers(
+        1, &mRendererId)); // generate 1 buffer, put identifier in buffer
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, mRendererId));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, size, data,
+                        GL_STATIC_DRAW)); // give it to OpenGL
 }
 
-VertexBuffer::~VertexBuffer() 
-{
-    GLCall( glDeleteBuffers(1, &mRendererId) ); 
-}
+VertexBuffer::~VertexBuffer() { GLCall(glDeleteBuffers(1, &mRendererId)); }
 
 void VertexBuffer::bind() {
-    GLCall( glBindBuffer(GL_ARRAY_BUFFER, mRendererId) );
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, mRendererId));
 }
 
-void VertexBuffer::unbind() {
-    GLCall (glBindBuffer(GL_ARRAY_BUFFER, 0));
-}
+void VertexBuffer::unbind() { GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); }
