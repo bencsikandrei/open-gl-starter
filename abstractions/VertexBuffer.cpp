@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-VertexBuffer::VertexBuffer(void const* data, unsigned size) {
+VertexBuffer::VertexBuffer(void const *data, unsigned size) {
     GLCall(glGenBuffers(
         1, &mRendererId)); // generate 1 buffer, put identifier in buffer
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, mRendererId));
